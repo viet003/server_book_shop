@@ -1,6 +1,7 @@
 import express from "express"
 require('dotenv').config()
-import { ConnectCRDB, ConnectMSQL } from "./src/config"
+import ConnectCRDB from "./src/config/connectCRDB.js"
+import ConnectMSQL from "./src/config/connectMSQL.js"
 import cors from "cors"
 import initRoutes from "./src/routes" // khởi tạo tất cả các route
 
