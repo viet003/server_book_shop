@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"; // Để tạo token (JWT)
 require('dotenv').config()
 
 // đăng nhập
-export const loginService = ({ email, pass_word }) = new Promise(async (resolve, reject) => {
+export const loginService = ({ email, pass_word }) => new Promise(async (resolve, reject) => {
     try {
         // Tìm account theo email
         const account = await db.User.findOne({
@@ -78,7 +78,8 @@ export const registerService = ({ user_name, email, pass_word, role }) => new Pr
                 email,
                 user_name,
                 pass_word: hash(pass_word),
-                role: role ? 1 : 0
+                role: role ? 1 : 0,
+                status: 1,
             }
         });
 
@@ -110,60 +111,60 @@ export const registerService = ({ user_name, email, pass_word, role }) => new Pr
     }
 });
 
-// sửa
-export const updateAccountService = ({ id, email, pass_word, type }) =>
-    new Promise(async (resolve, reject) => {
-        try {
-            // Cập nhật bản ghi tài khoản dựa trên id
-            const response = await db.Account.update(
-                { email, pass_word: hash(pass_word), type },
-                {
-                    where: { id },
-                }
-            );
+// // sửa
+// export const updateAccountService = ({ email, pass_word, role }) =>
+//     new Promise(async (resolve, reject) => {
+//         try {
+//             // Cập nhật bản ghi tài khoản dựa trên email
+//             const response = await db.User.update(
+//                 { email, pass_word: hash(pass_word), role },
+//                 {
+//                     where: { email },
+//                 }
+//             );
 
-            resolve({
-                err: response[0] ? 0 : 2,
-                msg: response[0] ? 'Cập nhật tài khoản thành công!' : 'Không tìm thấy tài khoản để cập nhật.',
-            });
-        } catch (error) {
-            reject({
-                err: 1,
-                msg: 'Lỗi khi cập nhật tài khoản!',
-                error: error,
-            });
-        }
-    });
+//             resolve({
+//                 err: response[0] ? 0 : 2,
+//                 msg: response[0] ? 'Cập nhật tài khoản thành công!' : 'Không tìm thấy tài khoản để cập nhật.',
+//             });
+//         } catch (error) {
+//             reject({
+//                 err: 1,
+//                 msg: 'Lỗi khi cập nhật tài khoản!',
+//                 error: error,
+//             });
+//         }
+//     });
 
 
-// xóa
-export const deleteAccountService = (id) =>
-    new Promise(async (resolve, reject) => {
-        try {
-            // Xóa bản ghi tài khoản dựa trên id
-            const response = await db.Account.destroy({
-                where: { id },
-            });
+// // xóa
+// export const deleteAccountService = (email) =>
+//     new Promise(async (resolve, reject) => {
+//         try {
+//             // Xóa bản ghi tài khoản dựa trên email
+//             const response = await db.User.destroy({
+//                 where: { email },
+//             });
 
-            resolve({
-                err: response ? 0 : 2,
-                msg: response ? 'Xóa tài khoản thành công!' : 'Không tìm thấy tài khoản để xóa.',
-            });
-        } catch (error) {
-            reject({
-                err: 1,
-                msg: 'Lỗi khi xóa tài khoản!',
-                error: error.message,
-            });
-        }
-    });
+//             resolve({
+//                 err: response ? 0 : 2,
+//                 msg: response ? 'Xóa tài khoản thành công!' : 'Không tìm thấy tài khoản để xóa.',
+//             });
+//         } catch (error) {
+//             reject({
+//                 err: 1,
+//                 msg: 'Lỗi khi xóa tài khoản!',
+//                 error: error.message,
+//             });
+//         }
+//     });
 
 // đổi mật khẩu
-export const changePasswordService = ({ email, oldPassword, newPassword }) =>
+export const changePasswordService = ({ email, old_pass_word, new_pass_word }) =>
     new Promise(async (resolve, reject) => {
         try {
             // Tìm tài khoản dựa trên email
-            const account = await db.Account.findOne({ where: { email } });
+            const account = await db.User.findOne({ where: { email } });
 
             if (!account) {
                 return resolve({
@@ -173,7 +174,7 @@ export const changePasswordService = ({ email, oldPassword, newPassword }) =>
             }
 
             // Kiểm tra mật khẩu cũ
-            const isCorrectOldPassword = bcrypt.compareSync(oldPassword, account.pass_word);
+            const isCorrectOldPassword = bcrypt.compareSync(old_pass_word, account.pass_word);
             if (!isCorrectOldPassword) {
                 return resolve({
                     err: 2,
@@ -182,12 +183,12 @@ export const changePasswordService = ({ email, oldPassword, newPassword }) =>
             }
 
             // Mã hóa mật khẩu mới
-            const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
+            const hashedNewPassword = bcrypt.hashSync(new_pass_word, 10);
 
             // Cập nhật mật khẩu mới
-            await db.Account.update(
+            await db.User.update(
                 { pass_word: hashedNewPassword },
-                { where: { id } }
+                { where: { email } }
             );
 
             resolve({
