@@ -1,27 +1,45 @@
 import express from "express";
 import * as authController from "../controllers/authController"
 import * as accountController from "../controllers/accountController"
+import * as bookTypeController from "../controllers/bookTypeController"
+import * as bookController from "../controllers/bookController"
+import * as bookImageController from "../controllers/bookImageController"
+import * as reviewController from "../controllers/reviewController"
+import * as middleWare from "../middleware/authMiddleWare"
+import { upload } from "../middleware/multerMiddleWare";
 
-// xử lý buffer với hình ảnh
-const multer = require('multer');
-const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-});
-
-// khởi tạo
+// init route
 const router = express.Router()
 
-//auth, account route
+// auth route
 router.post('/auth/login', authController.loginController)
 router.post('/auth/register', authController.registerController)
-router.post('/account/forgot', accountController.forgotPassWordController)
-router.post('/account/update', accountController.updateAccountController)
-router.post('/account/delete', accountController.deleteAccountController)
-router.post('/account/change', accountController.changePassWordController)
-router.post('/account/avatar', upload.single('avatar'), accountController.uploadAvatatController);
+
+// account route
+router.post('/account/forgot', middleWare.authMiddleware, accountController.forgotPassWordController)
+router.post('/account/update', middleWare.authMiddleware, accountController.updateAccountController)
+router.post('/account/delete', middleWare.authMiddleware, accountController.deleteAccountController)
+router.post('/account/change', middleWare.authMiddleware, accountController.changePassWordController)
+router.post('/account/avatar', middleWare.authMiddleware, upload.single('avatar'), accountController.uploadAvatatController);
 
 // books route
-// router.post('/book/add', upload.array('images', 10), )
+router.get('/book', bookController.getAllBookController)
+router.post('/book/id', bookController.getBookByIdController)
+router.post('/book/add', upload.array('images', 10), bookController.addBookController)
+router.post('/book/update', bookController.updateBookController)
+router.post('/book/delete', bookController.deleteBookController)
+
+// book image
+router.post('/bookimage/add', upload.array('images', 10), bookImageController.addBookImageController)
+router.post('/bookimage/delete', bookImageController.deleteBookImageController)
+
+// bookTyoe route
+router.post('/booktype/add', bookTypeController.addBookTypeController)
+router.post('/booktype/update', bookTypeController.updateBookTypeController)
+router.post('/booktype/delete', bookTypeController.deleteBookTypeController)
+
+// review route
+router.post('/review/add', reviewController.addReviewController)
+router.post('/review/delete', reviewController.deleteReviewController)
 
 export default router
