@@ -2,8 +2,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('carts', {
-      cart_id: {
+    await queryInterface.createTable('favorites', {
+      favorite_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -17,28 +17,20 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false,
       },
-      quantity: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      all_price: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('carts');
+    await queryInterface.dropTable('favorites');
   },
 };

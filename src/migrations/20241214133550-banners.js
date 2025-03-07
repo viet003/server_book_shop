@@ -2,23 +2,23 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('book_types', {
-      book_type_id: {
+    await queryInterface.createTable('banners', {
+      banner_id: {
         type: Sequelize.BIGINT,
         primaryKey: true,
         autoIncrement: true
       },
-      name: {
+      banner_name: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      tag: {
+      banner_public_id: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      description: {
+      banner_path: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -34,6 +34,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('book_types');
+    await queryInterface.dropTable('banners');
   }
 };

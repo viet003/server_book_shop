@@ -1,11 +1,11 @@
 import db from "../models"
 
 // lấy thông tin khách hàng
-export const getCustomerService = (customer_id) =>
+export const getCustomerService = (user_id) =>
     new Promise(async (resolve, reject) => {
         try {
-            const customer = await db.Customers.findOne({
-                where: { customer_id },
+            const customer = await db.Customer.findOne({
+                where: { user_id: user_id },
                 attributes: ['customer_id', 'full_name', 'dob', 'gender', 'address', 'phone', 'user_id'],
             });
 
@@ -35,7 +35,7 @@ export const getCustomerService = (customer_id) =>
 export const addCustomerService = ({ full_name, dob, gender, address, phone, user_id }) =>
     new Promise(async (resolve, reject) => {
         try {
-            const newCustomer = await db.Customers.create({ full_name, dob, gender, address, phone, user_id });
+            const newCustomer = await db.Customer.create({ full_name, dob, gender, address, phone, user_id });
             return resolve({
                 err: 0,
                 msg: 'Thêm khách hàng thành công.',
@@ -52,11 +52,11 @@ export const addCustomerService = ({ full_name, dob, gender, address, phone, use
     });
 
 // sửa thông tin khách hàng
-export const updateCustomerService = ({ customer_id, full_name, dob, gender, address, phone, user_id }) =>
+export const updateCustomerService = ({ full_name, dob, gender, address, phone, user_id }) =>
     new Promise(async (resolve, reject) => {
         try {
-            const updated = await db.Customers.update({full_name, dob, gender, address, phone, user_id}, {
-                where: { customer_id },
+            const updated = await db.Customer.update({ full_name, dob, gender, address, phone }, {
+                where: { user_id },
             });
 
             if (updated[0] === 0) {
@@ -82,11 +82,11 @@ export const updateCustomerService = ({ customer_id, full_name, dob, gender, add
 
 
 // xóa thông tin khách hàng
-export const deleteCustomerService = (customer_id) =>
+export const deleteCustomerService = (user_id) =>
     new Promise(async (resolve, reject) => {
         try {
-            const deleted = await db.Customers.destroy({
-                where: { customer_id },
+            const deleted = await db.Customer.destroy({
+                where: { user_id },
             });
 
             if (!deleted) {

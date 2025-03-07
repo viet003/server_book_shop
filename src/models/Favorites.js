@@ -2,16 +2,22 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Cart extends Model {
+  class Favorite extends Model {
     static associate(models) {
-      Cart.belongsTo(models.User, { foreignKey: 'user_id',  as: 'user', });
-      Cart.belongsTo(models.Book, { foreignKey: 'book_id',  as: 'book', });
+      Favorite.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        as: 'user',
+      });
+      Favorite.belongsTo(models.Book, {
+        foreignKey: 'book_id',
+        as: 'book',
+      });
     }
   }
 
-  Cart.init(
+  Favorite.init(
     {
-      cart_id: {
+      favorite_id: {
         type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true,
@@ -25,22 +31,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT,
         allowNull: false,
       },
-      quantity: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      all_price: {
-        type: DataTypes.BIGINT,
-        allowNull: false,
-      },
     },
     {
       sequelize,
-      modelName: 'Cart',
-      tableName: 'carts', 
-      timestamps: true,   
+      modelName: 'Favorite',
+      tableName: 'favorites',
+      timestamps: true,
     }
   );
 
-  return Cart;
+  return Favorite;
 };

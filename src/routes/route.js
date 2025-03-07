@@ -7,6 +7,12 @@ import * as bookImageController from "../controllers/bookImageController"
 import * as reviewController from "../controllers/reviewController"
 import * as cartController from "../controllers/cartController"
 import * as customerController from "../controllers/customerController"
+import * as orderController from "../controllers/orderController"
+import * as paymentService from "../services/paymentService"
+import * as discountController from "../controllers/discountController"
+import * as favoriteController from "../controllers/favoriteController"
+import * as bannerController from "../controllers/bannerController"
+import * as searchController from "../controllers/searchController"
 import * as middleWare from "../middleware/authMiddleWare"
 import { upload } from "../middleware/multerMiddleWare";
 
@@ -18,46 +24,79 @@ router.post('/auth/login', authController.loginController)
 router.post('/auth/register', authController.registerController)
 
 // account route
-router.post('/account/forgot', middleWare.authMiddleware, accountController.forgotPassWordController)
-router.post('/account/update', middleWare.authMiddleware, accountController.updateAccountController)
-router.post('/account/delete', middleWare.authMiddleware, accountController.deleteAccountController)
+router.get('/account', accountController.getAllAccountController)
+router.post('/account/id', accountController.getAccountController)
+router.post('/account/forgot', accountController.forgotPassWordController)
+router.put('/account/update', middleWare.authMiddleware, accountController.updateAccountController)
+router.delete('/account/delete', accountController.deleteAccountController)
 router.post('/account/change', middleWare.authMiddleware, accountController.changePassWordController)
-router.post('/account/avatar', middleWare.authMiddleware, upload.single('avatar'), accountController.uploadAvatatController);
+router.post('/account/avatar', upload.single('avatar'), accountController.uploadAvatatController);
 
 // books route
 router.get('/book', bookController.getAllBookController)
 router.post('/book/id', bookController.getBookByIdController)
 router.post('/book/add', upload.array('images', 10), bookController.addBookController)
-router.post('/book/update', bookController.updateBookController)
-router.post('/book/delete', bookController.deleteBookController)
+router.put('/book/update', bookController.updateBookController)
+router.delete('/book/delete', bookController.deleteBookController)
 
-// book image
+// book image route
 router.post('/bookimage/add', upload.array('images', 10), bookImageController.addBookImageController)
-router.post('/bookimage/delete', bookImageController.deleteBookImageController)
+router.delete('/bookimage/delete', bookImageController.deleteBookImageController)
 
-// bookTyoe route
+// Discount route
+router.get('/discount', discountController.getAllDiscountsController)
+router.post('/discount/add', discountController.addDiscountController)
+router.put('/discount/update', discountController.updateDiscountController)
+router.delete('/discount/delete', discountController.deleteDiscountController)
+
+// bookType route
+router.get('/booktype', bookTypeController.getAllBookTypeController)
 router.post('/booktype/add', bookTypeController.addBookTypeController)
-router.post('/booktype/update', bookTypeController.updateBookTypeController)
-router.post('/booktype/delete', bookTypeController.deleteBookTypeController)
+router.put('/booktype/update', bookTypeController.updateBookTypeController)
+router.delete('/booktype/delete', bookTypeController.deleteBookTypeController)
 
 // review route
 router.post('/review/add', reviewController.addReviewController)
 router.post('/review/delete', reviewController.deleteReviewController)
 
+// banner route
+router.get('/banner', bannerController.getAllBannerController)
+router.post('/banner/add',upload.single('banner'), bannerController.addBannerController)
+router.delete('/banner/delete', bannerController.deleteBannerController)
+
 // cart route
-router.get('/cart', cartController.getCartController)
+router.post('/cart/userid', cartController.getCartController)
+router.post('/cart/count', cartController.getCountController)
 router.post('/cart/add', cartController.addToCartController)
-router.post('/cart/update', cartController.updateCartController)
-router.post('/cart/delete', cartController.deleteCartItemController)
+router.put('/cart/update', cartController.updateCartController)
+router.delete('/cart/delete', cartController.deleteCartItemController)
+
+// favorite route
+router.post('/favorite/userid', favoriteController.getFavoritesController)
+router.post('/favorite/add', favoriteController.addToFavoriteController)
+router.delete('/favorite/delete', favoriteController.deleteFavoriteItemController)
 
 // customer route
-router.post('/customer', customerController.getCustomerController)
+router.post('/customer/id', customerController.getCustomerController)
 router.post('/customer/add', customerController.addCustomerController)
-router.post('/customer/update', customerController.updateCustomerController)
-router.post('/customer/delete', customerController.deleteCustomerController)
+router.put('/customer/update', customerController.updateCustomerController)
+router.delete('/customer/delete', customerController.deleteCustomerController)
 
 // order route
+router.get("/order", orderController.getAllOrderController);
+router.post("/order/userid", orderController.getAllOrderByUserController);
+router.post("/order/get", orderController.getOrderController);
+router.put("/order/status", orderController.updateOrderStatusController);
+router.post("/order/add", orderController.addOrderController);
+router.put("/order/update", orderController.updateOrderController);
+router.delete("/order/delete", orderController.deleteOrderController);
 
-// payment method
+// payment
+router.post("/payment", paymentService.payment);
+
+// search
+router.post("/search/suggestion", searchController.searchSuggestionController);
+router.post("/search/books", searchController.searchController);
+
 
 export default router

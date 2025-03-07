@@ -2,23 +2,19 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('book_types', {
-      book_type_id: {
+    await queryInterface.createTable('discounts', {
+      discount_id: {
         type: Sequelize.BIGINT,
         primaryKey: true,
         autoIncrement: true
       },
-      name: {
+      discount_name: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      tag: {
-        type: Sequelize.STRING,
+      percent_discount: {
+        type: Sequelize.BIGINT,
         allowNull: false
-      },
-      description: {
-        type: Sequelize.STRING,
-        allowNull: true
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -34,6 +30,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('book_types');
+    await queryInterface.dropTable('discounts');
   }
 };

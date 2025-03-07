@@ -1,10 +1,32 @@
 import db from "../models"
 
-export const addBookTypeService = async ({ name, description }) => {
+// lấy toàn bộ
+export const getAllBookTypeService = () => new Promise(async (resolve, reject) => {
+    try {
+        const bookTypes = await db.BookType.findAll({});
+
+        return resolve({
+            err: bookTypes.length ? 0 : 2,
+            msg: bookTypes.length ? 'Lấy danh sách loại sách thành công!' : 'Không có loại sách nào.',
+            data: bookTypes
+        });
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách loại sách:", error);
+        return reject({
+            err: 1,
+            msg: 'Lỗi khi lấy danh sách loại sách!',
+            error: error,
+        });
+    }
+})
+
+// thêm mới
+export const addBookTypeService = async ({ name, tag,  description }) => {
     try {
         // Thêm dữ liệu vào bảng
         const newBookType = await db.BookType.create({
-            name,
+            name : name.trim(),
+            tag: tag.trim().toLowerCase(),
             description: description.trim() || null,
         });
 
@@ -24,11 +46,11 @@ export const addBookTypeService = async ({ name, description }) => {
 };
 
 // chinh sửa loại sách 
-export const updateBookTypeService = async ({ id, name, description }) => {
+export const updateBookTypeService = async ({ book_type_id, name, tag,  description }) => {
     try {
         // Tìm bản ghi cần sửa
         const bookType = await db.BookType.findOne({
-            where: { book_type_id: id },
+            where: { book_type_id: book_type_id },
         });
 
         if (!bookType) {
@@ -39,7 +61,7 @@ export const updateBookTypeService = async ({ id, name, description }) => {
         }
 
         // Cập nhật dữ liệu
-        await bookType.update({ name, description });
+        await bookType.update({ name: name.trim(), tag : tag.trim(), description: tag.trim() });
 
         return {
             err: 0,
@@ -58,11 +80,11 @@ export const updateBookTypeService = async ({ id, name, description }) => {
 
 
 // xóa loại sách
-export const deleteBookTypeService = async ({ id }) => {
+export const deleteBookTypeService = async ({ book_type_id }) => {
     try {
         // Tìm bản ghi cần xóa
         const bookType = await db.BookType.findOne({
-            where: { book_type_id: id },
+            where: { book_type_id: book_type_id },
         });
 
         if (!bookType) {

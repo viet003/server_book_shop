@@ -14,15 +14,15 @@ export const getAllBookController = async (req, res) => {
 
 //lấy sách theo id
 export const getBookByIdController = async (req, res) => {
-    const { id } = req.body;
+    const { book_id } = req.body;
     try {
-        if(!id) {
+        if(!book_id) {
             return res.status(400).json({
                 err: 1,
                 msg: "Thiếu dữ liệu đầu vào!"
             })
         }
-        const rs = await bookService.getBookByIdService(id);
+        const rs = await bookService.getBookByIdService(book_id);
         return res.status(200).json(rs);
 
     } catch (error) {
@@ -36,6 +36,7 @@ export const addBookController = async (req, res) => {
     const { title, author, publisher, published_date, price, discount_price, stock_quantity, description, book_type_id } = req.body;
 
     try {
+        console.log('req.files in controller:', req.files); // Debug
         // Kiểm tra nếu thiếu dữ liệu bắt buộc
         if (!title || !author || !publisher || !published_date || !price || !stock_quantity || !book_type_id) {
             return res.status(400).json({

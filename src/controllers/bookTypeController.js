@@ -1,10 +1,23 @@
 import * as bookTypeService from '../services/bookTypeService';
 
+//lấy toàn bộ tài khoản
+export const getAllBookTypeController = async (req, res) => {
+    try {
+        const rs = await bookTypeService.getAllBookTypeService();
+        return res.status(200).json(rs);
+
+    } catch (error) {
+        console.error('Error in getAllBookTypeController:', error);
+        return res.status(500).json(error);
+    }
+};
+
+
 // thêm loại sách
 export const addBookTypeController = async (req, res) => {
-    const { name, description } = req.body;
+    const { name, tag,  description } = req.body;
     try {
-        if (!name) {
+        if (!name || !tag) {
             return res.status(400).json({
                 err: 1,
                 msg: 'Thiếu dữ liệu đầu vào!',
@@ -25,9 +38,9 @@ export const addBookTypeController = async (req, res) => {
 
 // sửa loại sách
 export const updateBookTypeController = async (req, res) => {
-    const { id, name, description } = req.body;
+    const { book_type_id, name, tag, description } = req.body;
     try {
-        if (!id || (!name && !description)) {
+        if (!book_type_id || (!name && !description && !tag)) {
             return res.status(400).json({
                 err: 1,
                 msg: 'Thiếu dữ liệu đầu vào!',
@@ -48,9 +61,9 @@ export const updateBookTypeController = async (req, res) => {
 
 // xóa loại sách
 export const deleteBookTypeController = async (req, res) => {
-    const { id } = req.body;
+    const { book_type_id } = req.body;
     try {
-        if (!id) {
+        if (!book_type_id) {
             return res.status(400).json({
                 err: 1,
                 msg: 'Thiếu ID loại sách cần xóa!',
